@@ -19,11 +19,9 @@ var app = new Vue({
             sunset: '',
             geoCoords: ''
         },
-
         forecasts_data: [{
             clouds: ''
         }],
-
         hourlyForcasts: [{
             date: '',
             isToday: false,
@@ -42,16 +40,21 @@ var app = new Vue({
     },
     mounted: function() {
         this.submitCityname()
-        this.daliy_list()
-        this.hours_list()
     },
     methods: {
-        submitCityname: function() {
+        submitCityname: function(url) {
+            var cityname = this.message
+            var cityName = cityname || 'shanghai';
+            console.log(cityName);
+            this.current_list(`http://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=ffcf51d2e901094c90de0c34e273125b&units=metric`)
+            this.daliy_list(`http://api.openweathermap.org/data/2.5/forecast/daily?q=${cityName}&mode=json&appid=ffcf51d2e901094c90de0c34e273125b&units=metric&cnt=16`)
+            this.hours_list(`http://api.openweathermap.org/data/2.5/forecast?q=${cityName}&mode=json&appid=ffcf51d2e901094c90de0c34e273125b&units=metric`)
+        },
+        current_list: function(url) {
+            console.log(url);
             var that = this
-            var cityname = that.message
-            let cityName = cityname || 'shanghai';
-            axios.get(`http://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=ffcf51d2e901094c90de0c34e273125b&units=metric`)
-              .then(function(response) {
+            axios.get(url)
+                .then(function(response) {
                     that.current_data.time = formatdataCurrenttime();
                     // console.log(response);
                     that.current_data.name = response.data.name
@@ -75,12 +78,12 @@ var app = new Vue({
                     console.log(error);
                 });
         },
-        daliy_list: function() {
+        daliy_list: function(url) {
             var that = this // `this` 在方法里指当前 Vue 实例
-            var cityname = that.message
-            let cityName = cityname || 'shanghai';
-            axios.get(`http://api.openweathermap.org/data/2.5/forecast/daily?q=${cityName}&mode=json&appid=ffcf51d2e901094c90de0c34e273125b&units=metric&cnt=16`)
-              .then(function(response) {
+            // var cityname = that.message
+            // let cityName = cityname || 'shanghai';
+            axios.get(url)
+                .then(function(response) {
                     // console.log(response);
                     var arr = [];
                     var len = response.data.cnt
@@ -106,12 +109,12 @@ var app = new Vue({
                     console.log(error);
                 });
         },
-        hours_list: function() {
+        hours_list: function(url) {
             var that = this // `this` 在方法里指当前 Vue 实例
-            var cityname = that.message
-            let cityName = cityname || 'shanghai';
-            axios.get(`http://api.openweathermap.org/data/2.5/forecast?q=${cityName}&mode=json&appid=ffcf51d2e901094c90de0c34e273125b&units=metric`)
-              .then(function(response) {
+            // var cityname = that.message
+            // let cityName = cityname || 'shanghai';
+            axios.get(url)
+                .then(function(response) {
                     // console.log(response);
                     // 清空旧数据
                     that.hourlyForcasts = []
@@ -176,7 +179,7 @@ var app = new Vue({
                 });
         },
         changeBoolean: function(event) {
-            var el = document.querySelectorAll('.item');
+            var el = document.querySelectorAll('.item')
             el[0].style.borderBottom = "rgb(235,235,235) 2px solid"
             el[1].style.borderBottom = "rgb(235,235,235) 2px solid"
             var ele = event.target.dataset.id
@@ -234,52 +237,41 @@ function get_windDirection(degree) {
 function formatTime(date) {
     return date.toString().length == 1 ? '0' + date.toString() : date
 };
+/***********重复调用的时间函数************/
+//将参数转化为myDate对象里的参数
+function commonTime(myDate) {
+    myDate.year = myDate.getFullYear();
+    myDate.month = myDate.getMonth() + 1;
+    myDate.date = myDate.getDate();
+    myDate.hours = myDate.getHours();
+    myDate.minutes = myDate.getMinutes();
+    myDate.seconds = myDate.getSeconds();
+    myDate.weekday = myDate.getDay();
+}
 /*********转化时间格式**************/
 function formatdataCurrenttime() {
     var myDate = new Date();
-    var year = myDate.getFullYear();
-    var month = myDate.getMonth() + 1;
-    var date = myDate.getDate();
-    var hours = myDate.getHours();
-    var minutes = myDate.getMinutes();
-    var seconds = myDate.getSeconds();
-    if (hours < 12) {
-        return formatTime(date) + "/" + formatTime(month) + "/" + year + " " + formatTime(hours) + ":" + formatTime(minutes) + ":" + formatTime(seconds) + " AM";
-    } else if (hours == 12) {
-        return formatTime(date) + "/" + formatTime(month) + "/" + year + " " + formatTime(hours) + ":" + formatTime(minutes) + ":" + formatTime(seconds) + " PM";
+    commonTime(myDate);
+    if (myDate.hours < 12) {
+        return formatTime(myDate.date) + "/" + formatTime(myDate.month) + "/" + myDate.year + " " + formatTime(myDate.hours) + ":" + formatTime(myDate.minutes) + ":" + formatTime(myDate.seconds) + " AM";
+    } else if (myDate.hours == 12) {
+        return formatTime(myDate.date) + "/" + formatTime(myDate.month) + "/" + myDate.year + " " + formatTime(myDate.hours) + ":" + formatTime(myDate.minutes) + ":" + formatTime(myDate.seconds) + " PM";
     } else {
-        hours = hours - 12;
-        return formatTime(date) + "/" + formatTime(month) + "/" + year + " " + formatTime(hours) + ":" + formatTime(minutes) + ":" + formatTime(seconds) + " PM";
+        myDate.hours = myDate.hours - 12;
+        return formatTime(myDate.date) + "/" + formatTime(myDate.month) + "/" + myDate.year + " " + formatTime(myDate.hours) + ":" + formatTime(myDate.minutes) + ":" + formatTime(myDate.seconds) + " PM";
     }
-
-    // return formatTime(date) + "/" + formatTime(month) + "/" + year + " " + formatTime(hours) + ":" + formatTime(minutes) + ":" + formatTime(seconds)
-    // return myDate.toLocaleString();
 }
 
 function formatdataDaliytime(datadate) {
     var myDate = new Date(datadate * 1000);
-    var year = myDate.getFullYear();
-    var month = myDate.getMonth() + 1;
-    var date = myDate.getDate();
-    var hours = myDate.getHours();
-    var minutes = myDate.getMinutes();
-    var seconds = myDate.getSeconds();
-    var weekday = myDate.getDay();
-
-
-    return formattoWeek(weekday) + " " + formatTime(date) + "  " + formattoMonth(month)
+    commonTime(myDate);
+    return formattoWeek(myDate.weekday) + " " + formatTime(myDate.date) + "  " + formattoMonth(myDate.month)
 }
 
 function formatdataHourstime(datadate) {
     var myDate = new Date(datadate * 1000);
-    var year = myDate.getFullYear();
-    var month = myDate.getMonth() + 1;
-    var date = myDate.getDate();
-    var hours = myDate.getHours();
-    var minutes = myDate.getMinutes();
-    var seconds = myDate.getSeconds();
-
-    return formatTime(hours) + ":" + formatTime(minutes)
+    commonTime(myDate);
+    return formatTime(myDate.hours) + ":" + formatTime(myDate.minutes)
 
 }
 /************将数字月份转化为英文简写*****************/

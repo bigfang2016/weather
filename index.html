@@ -2,136 +2,131 @@
 <html lang="zh-cmn-Hans">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="renderer" content="webkit">
-  <meta http-equiv="Cache-Contdol" content="no-transform" />
-  <meta http-equiv="Cache-Control" content="no-siteapp" />
-  <meta content="email=no" name="format-detection" />
-  <meta content="telephone=no" name="format-detection" />
-  <title>天气预报</title>
-  <meta name="keywords" content="HTML, CSS">
-  <meta name="description" content="仿天气站,使用Vue.js写">
-  <link rel="stylesheet" href="css/cormalize.css" />
-  <link rel="stylesheet" href="css/main.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Contdol" content="no-transform" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta content="email=no" name="format-detection" />
+    <meta content="telephone=no" name="format-detection" />
+    <title>天气预报</title>
+    <meta name="keywords" content="HTML, CSS">
+    <meta name="description" content="仿天气站,使用Vue.js写">
+    <link rel="stylesheet" href="css/cormalize.css" />
+    <link rel="stylesheet" href="css/main.css" />
 </head>
+
 <body>
-  <div id="app">
-    <div class="search">
-      <input class="input" v-on:keyup.enter="submitCityname" v-model="message" placeholder="your city name" >
-      <button class="btn"  v-on:click="submitCityname">search</button>
-    </div>
-    <div class="list clearfix">
-      <div class="list-left">
-        <h2 class="name">Weather in {{current_data.name}}</h2>
-        <div class="temperature">
-          <img class="iconfont" v-bind:src="current_data.icon">
-          <span class="temperature-value"> {{current_data.temperature}} °C </span>
+    <div id="app">
+        <div class="search">
+            <input class="input" v-on:keyup.enter="submitCityname" v-model="message" placeholder="your city name">
+            <button class="btn" v-on:click="submitCityname">search</button>
         </div>
-        <p class="list-p">{{ current_data.weather }}</p>
-        <p class="list-p">更新时间: {{ current_data.time }}</p>
-        <table class="table">
-          <tr>
-            <td>风</td>
-            <td>
-              <p>风级 {{current_data.wind_state}} 风速 {{current_data.wind_speed}}</p>
-              <p>风向 {{current_data.wind_direction}} {{current_data.wind_deg}}</p>
-            </td>
-          </tr>
-          <tr>
-            <td>云量</td>
-            <td>{{current_data.weather}}</td>
-          </tr>
-          <tr>
-            <td>压力</td>
-            <td>{{current_data.pressure}}</td>
-          </tr>
-          <tr>
-            <td>湿度</td>
-            <td>{{current_data.humidity}}</td>
-          </tr>
-          <tr>
-            <td>日出</td>
-            <td>{{current_data.sunrise}}</td>
-          </tr>
-          <tr>
-            <td>日落</td>
-            <td>{{current_data.sunset}}</td>
-          </tr>
-          <tr>
-            <td>地理协调</td>
-            <td>{{current_data.geoCoords}}</td>
-          </tr>
-
-        </table>
-      </div>
-      <div class="list-right">
-        <ul class="items clearfix">
-          <li class="item" data-id="day" v-on:click="changeBoolean" style="border-bottom: rgb(240,154,39) 2px solid"> day</li>
-          <li class="item" data-id="hours" v-on:click="changeBoolean"> hours</li>
-        </ul>
-
-        <div class="box" v-if="bool">
-          <div class="daily_weather">
-            <div class="showweather clearfix" v-for="forecasts in forecasts_data">
-              <div class="showweather-left">
-                <p class="showweather-left-date">{{forecasts.dt}}</p>
-                <img class="showweather-iconfont" v-bind:src="forecasts.icon">
-                <p class="showweather-left-text" v-show="forecasts.seen">Today</p>
-              </div>
-              <div class="showweather-right">
-                <p class="showweather-right-temp">
-                  <span>{{forecasts.temperature_max }}°C </span>
-                  <span>{{forecasts.temperature_min}}°C </span>
-                  <span>{{forecasts.weather}}</span>
-                </p>
-                <p>{{forecasts.wind_speed}} m/s</p>
-                <p>clouds: {{forecasts.clouds}} %, {{forecasts.pressure}} hpa </p>
-              </div>
-            </div>
-          </div>
-
-
-        </div>
-        <div class="box" v-else>
-          <div class="hours_weather">
-            <div class="weather_outside" v-for="hourlyForcast in hourlyForcasts">
-                 <div class="weather_inside_up"><!--这是显示每天的栏目 -->
-                  {{ hourlyForcast.date }} <span v-if="hourlyForcast.isToday"> Today</span>
+        <div class="list clearfix">
+            <div class="list-left">
+                <h2 class="name">Weather in {{current_data.name}}</h2>
+                <div class="temperature">
+                    <img class="iconfont" v-bind:src="current_data.icon">
+                    <span class="temperature-value"> {{current_data.temperature}} °C </span>
                 </div>
-                <div class="showhoursweather weather_inside_down clearfix" v-for="hourlyWeather in hourlyForcast.hourlyWeathers">
-                  <div class="showhoursweather-left">
-                    <p class="showhoursweather-left-date">{{hourlyWeather.dt}}</p>
-                    <img class="showhoursweather-iconfont" v-bind:src="hourlyWeather.icon">
+                <p class="list-p">{{ current_data.weather }}</p>
+                <p class="list-p">更新时间: {{ current_data.time }}</p>
+                <table class="table">
+                    <tr>
+                        <td>风</td>
+                        <td>
+                            <p>风级 {{current_data.wind_state}} 风速 {{current_data.wind_speed}}</p>
+                            <p>风向 {{current_data.wind_direction}} {{current_data.wind_deg}}</p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>云量</td>
+                        <td>{{current_data.weather}}</td>
+                    </tr>
+                    <tr>
+                        <td>压力</td>
+                        <td>{{current_data.pressure}}</td>
+                    </tr>
+                    <tr>
+                        <td>湿度</td>
+                        <td>{{current_data.humidity}}</td>
+                    </tr>
+                    <tr>
+                        <td>日出</td>
+                        <td>{{current_data.sunrise}}</td>
+                    </tr>
+                    <tr>
+                        <td>日落</td>
+                        <td>{{current_data.sunset}}</td>
+                    </tr>
+                    <tr>
+                        <td>地理协调</td>
+                        <td>{{current_data.geoCoords}}</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="list-right">
+                <ul class="items clearfix">
+                    <li class="item" data-id="day" v-on:click="changeBoolean" style="border-bottom: rgb(240,154,39) 2px solid"> day</li>
+                    <li class="item" data-id="hours" v-on:click="changeBoolean"> hours</li>
+                </ul>
+                <div class="box" v-if="bool">
+                    <div class="daily_weather">
+                        <div class="showweather clearfix" v-for="forecasts in forecasts_data">
+                            <div class="showweather-left">
+                                <p class="showweather-left-date">{{forecasts.dt}}</p>
+                                <img class="showweather-iconfont" v-bind:src="forecasts.icon">
+                                <p class="showweather-left-text" v-show="forecasts.seen">Today</p>
+                            </div>
+                            <div class="showweather-right">
+                                <p class="showweather-right-temp">
+                                    <span>{{forecasts.temperature_max }}°C </span>
+                                    <span>{{forecasts.temperature_min}}°C </span>
+                                    <span>{{forecasts.weather}}</span>
+                                </p>
+                                <p>{{forecasts.wind_speed}} m/s</p>
+                                <p>clouds: {{forecasts.clouds}} %, {{forecasts.pressure}} hpa </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="box" v-else>
+                    <div class="hours_weather">
+                        <div class="weather_outside" v-for="hourlyForcast in hourlyForcasts">
+                            <div class="weather_inside_up">
+                                <!--这是显示每天的栏目 -->
+                                {{ hourlyForcast.date }} <span v-if="hourlyForcast.isToday"> Today</span>
+                            </div>
+                            <div class="showhoursweather weather_inside_down clearfix" v-for="hourlyWeather in hourlyForcast.hourlyWeathers">
+                                <div class="showhoursweather-left">
+                                    <p class="showhoursweather-left-date">{{hourlyWeather.dt}}</p>
+                                    <img class="showhoursweather-iconfont" v-bind:src="hourlyWeather.icon">
 
-                  </div>
-                  <div class="showhoursweather-right">
-                    <p class="showhoursweather-right-temp">
-                      <span>{{hourlyWeather.temperature }}°C </span>
-                      <span>{{hourlyWeather.weather}}</span>
-                    </p>
-                    <p>
-                      <span>{{hourlyWeather.temperature_min}}</span>
-                      <span>{{hourlyWeather.temperature_max}} °C  </span>
-                      <span>{{hourlyWeather.wind_speed}} m/s. </span>
-                      <span>{{ hourlyWeather.clouds}} %,</span>
-                      <span>{{hourlyWeather.pressure}} hpa</span>
-                    </p>
-                  </div>
+                                </div>
+                                <div class="showhoursweather-right">
+                                    <p class="showhoursweather-right-temp">
+                                        <span>{{hourlyWeather.temperature }}°C </span>
+                                        <span>{{hourlyWeather.weather}}</span>
+                                    </p>
+                                    <p>
+                                        <span>{{hourlyWeather.temperature_min}}</span>
+                                        <span>{{hourlyWeather.temperature_max}} °C  </span>
+                                        <span>{{hourlyWeather.wind_speed}} m/s. </span>
+                                        <span>{{ hourlyWeather.clouds}} %,</span>
+                                        <span>{{hourlyWeather.pressure}} hpa</span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-          </div>
         </div>
-
-
-      </div>
     </div>
-
-  </div>
-  <script src="https://cdn.bootcss.com/vue/2.3.0/vue.js"></script>
-  <script src="https://cdn.bootcss.com/axios/0.16.1/axios.js"></script>
-  <script src="js/main.js"></script>
+    <script src="https://cdn.bootcss.com/vue/2.3.0/vue.js"></script>
+    <script src="https://cdn.bootcss.com/axios/0.16.1/axios.js"></script>
+    <script src="js/main.js"></script>
 </body>
 
 </html>
