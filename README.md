@@ -2,6 +2,10 @@
 
 天气预报
 
+使用的技术：
+- vue 2.0
+- axios
+
 本项目使用 openweathermap.org 提供的 API，仿照 http://openweathermap.org/city，以表格形式展示实时天气预报、 16 日内每日天气预报和 5 日内每 3 小时天气预报
 
 功能需求实现：
